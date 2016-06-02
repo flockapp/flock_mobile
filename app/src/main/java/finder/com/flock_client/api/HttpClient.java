@@ -20,6 +20,10 @@ public class HttpClient {
     private String token;
     private String baseUrl = "";
 
+    public HttpClient() {
+
+    }
+
     public HttpClient(String token) {
         this.token = token;
     }
@@ -45,8 +49,7 @@ public class HttpClient {
         }
         Request request = builder.build();
         Response response = client.newCall(request).execute();
-        JSONObject responseJSON = new JSONObject(response.body().string());
-        return responseJSON.getJSONObject("data");
+        return new JSONObject(response.body().string());
     }
 
     public JSONObject makeGetRequest(String suffix) throws Exception {
@@ -62,6 +65,6 @@ public class HttpClient {
     }
 
     public JSONObject makePostRequest(String suffix, JSONObject datObj) throws Exception {
-        makeRequest("post", suffix, datObj);
+        return makeRequest("post", suffix, datObj);
     }
 }
