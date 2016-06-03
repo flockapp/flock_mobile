@@ -1,4 +1,4 @@
-package finder.com.flock_client.api;
+package finder.com.flock_client.client.api;
 
 import org.json.JSONObject;
 

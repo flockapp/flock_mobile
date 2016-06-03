@@ -1,4 +1,4 @@
-package finder.com.flock_client.api;
+package finder.com.flock_client.client.api;
 
 import android.util.Log;
 
@@ -34,7 +34,7 @@ public class User {
         userInfo.put("username", username);
         userInfo.put("password", password);
         JSONObject resp = client.makePostRequest("/auth/login", userInfo);
-        if (resp.get("success") == true) {
+        if (resp.getBoolean("success")) {
             loginSuccess = true;
             token = resp.getString("data");
         }
@@ -42,9 +42,12 @@ public class User {
         return resp.getString("message");
     }
 
-    public static boolean register(String fullName, String username, String password, String email) throws Exception {
-//        HttpClient client = new HttpClient();
-//        JSONObject userInfo = new JSONObject();
-//        userInfo.put("us")
+    public static JSONObject register(String fullName, String username, String password) throws Exception {
+        HttpClient client = new HttpClient();
+        JSONObject userInfo = new JSONObject();
+        userInfo.put("username", username);
+        userInfo.put("fullName", fullName);
+        userInfo.put("password", password);
+        return client.makePostRequest("/auth/register", userInfo);
     }
 }
