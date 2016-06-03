@@ -1,13 +1,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-
-    <TextView
-        android:text="Register"
-        android:textSize="32sp"
+    <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
+        android:inputType="textPersonName"
+        android:text="Name"
+        android:ems="10"
+        android:id="@+id/form_register_name" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/form_register_password" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPassword"
+        android:ems="10"
+        android:id="@+id/form_register_confirmPassword" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_button"
+        android:text="Submit"/>
 
 </LinearLayout>
