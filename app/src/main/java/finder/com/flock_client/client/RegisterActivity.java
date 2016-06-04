@@ -22,18 +22,20 @@ import finder.com.flock_client.client.api.User;
  */
 
 public class RegisterActivity extends AppCompatActivity{
-    @BindView(R.id.input_name) private EditText _fullName;
-    @BindView(R.id.input_username) private EditText _username;
-    @BindView(R.id.input_password) private EditText _password;
-    @BindView(R.id.input_confirm_password) private EditText _confirmPassword;
+    @BindView(R.id.input_name) public EditText _fullName;
+    @BindView(R.id.input_username) public EditText _username;
+    @BindView(R.id.input_password) public EditText _password;
+    @BindView(R.id.input_confirm_password) public EditText _confirmPassword;
 
-    private ProgressDialog progressDialog = new ProgressDialog(RegisterActivity.this);
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.activity_register);
 
+
+        progressDialog = new ProgressDialog(RegisterActivity.this);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Creating User...");
 
@@ -41,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity{
     }
 
     @OnClick(R.id.btn_signup)
-    private void signUpButtonClicked() {
+    public void signUpButtonClicked() {
         if (validateSignup()) {
             progressDialog.show();
 
@@ -53,7 +55,7 @@ public class RegisterActivity extends AppCompatActivity{
     }
 
     @OnClick(R.id.link_login)
-    private void loginLinkClicked() {
+    public void loginLinkClicked() {
         //Return to login activity
         finish();
     }

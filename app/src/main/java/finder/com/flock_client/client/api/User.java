@@ -30,7 +30,7 @@ public class User {
         return loginSuccess;
     }
 
-    public String login() throws Exception {
+    public JSONObject login() throws Exception {
         HttpClient client = new HttpClient();
         JSONObject userInfo = new JSONObject();
         userInfo.put("username", username);
@@ -41,7 +41,7 @@ public class User {
             token = resp.getString("data");
         }
         Log.d("login debug", resp.getString("debug"));
-        return resp.getString("message");
+        return resp;
     }
 
     public static JSONObject register(String fullName, String username, String password) throws Exception {

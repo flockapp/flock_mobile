@@ -11,9 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import finder.com.flock_client.FlockApplication;
 import finder.com.flock_client.R;
 import finder.com.flock_client.client.api.User;
 
@@ -21,17 +24,18 @@ public class LoginActivity extends AppCompatActivity {
 
     private final int REQUEST_SIGNUP = 0;
     @BindView(R.id.input_username)
-    private EditText _username;
+    public EditText _username;
     @BindView(R.id.input_password)
-    private EditText _password;
+    public EditText _password;
     @BindView(R.id.btn_login)
-    private Button _loginButton;
+    public Button _loginButton;
 
-    private ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this, R.style.AppTheme);
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        progressDialog = new ProgressDialog(LoginActivity.this, R.style.AppTheme);
         setContentView(R.layout.activity_login);
 
         progressDialog.setIndeterminate(true);
@@ -41,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.btn_login)
-    private void loginButtonClicked() {
+    public void loginButtonClicked() {
         if (validateLogin()) {
             _loginButton.setEnabled(false);
             progressDialog.show();
@@ -52,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.link_signup)
-    private void signupLinkClicked() {
+    public void signupLinkClicked() {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivityForResult(intent, REQUEST_SIGNUP);
     }
@@ -113,11 +117,12 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 boolean success = false;
                 User user = new User(username, password);
-                String msg = user.login();
+                JSONObject resp = user.login();
                 if (user.loginSuccess()) {
                    success = true;
                 }
-                return new Pair<>(msg, success);
+                ((FlockApplication)getApplication()).setCurrToken(resp.getString("data"));
+                return new Pair<>(resp.getString("message"), success);
             } catch (Exception e) {
                 Log.d("debug error", e.toString());
                 return null;
