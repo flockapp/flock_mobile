@@ -15,6 +15,8 @@ public class User {
     private String username;
     private String password;
 
+    public User() throws Exception {}
+
     public User(String username, String password) throws Exception {
         this.username = username;
         this.password = password;
