@@ -1,10 +1,12 @@
 package finder.com.flock_client.client;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -26,6 +28,7 @@ public class RegisterActivity extends AppCompatActivity{
     @BindView(R.id.input_username) public EditText _username;
     @BindView(R.id.input_password) public EditText _password;
     @BindView(R.id.input_confirm_password) public EditText _confirmPassword;
+    @BindView(R.id.btn_signup) public Button _signupButton;
 
     private ProgressDialog progressDialog;
 
@@ -34,8 +37,7 @@ public class RegisterActivity extends AppCompatActivity{
         super.onCreate(b);
         setContentView(R.layout.activity_register);
 
-
-        progressDialog = new ProgressDialog(RegisterActivity.this);
+        progressDialog = new ProgressDialog(RegisterActivity.this, android.R.style.Theme_Light);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Creating User...");
 
@@ -45,6 +47,7 @@ public class RegisterActivity extends AppCompatActivity{
     @OnClick(R.id.btn_signup)
     public void signUpButtonClicked() {
         if (validateSignup()) {
+            _signupButton.setEnabled(false);
             progressDialog.show();
 
             String fullName = _fullName.getText().toString();
@@ -61,6 +64,7 @@ public class RegisterActivity extends AppCompatActivity{
     }
 
     private void onLoginFailed(String msg) {
+        _signupButton.setEnabled(true);
         Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
     }
 
@@ -94,7 +98,7 @@ public class RegisterActivity extends AppCompatActivity{
         private String fullName;
         private String password;
 
-        public RegisterTask(String username, String fullName, String password) {
+        public RegisterTask(String fullName, String username, String password) {
             this.username = username;
             this.fullName = fullName;
             this.password = password;
@@ -103,8 +107,8 @@ public class RegisterActivity extends AppCompatActivity{
         @Override
         protected String doInBackground(Void... params) {
             try {
-                User user = new User();
-                JSONObject resp = user.register(fullName, username, password);
+                User user = new User(username, password, fullName);
+                JSONObject resp = user.register();
                 if (resp.getBoolean("success")) {
                     return null; //Successfully created user;
                 } else {
@@ -112,7 +116,7 @@ public class RegisterActivity extends AppCompatActivity{
                 }
 
             } catch (Exception e) {
-                Log.d("debug error", e.toString());
+                Log.d("debug error", "system", e);
                 return "Client Error";
             }
         }
@@ -121,8 +125,9 @@ public class RegisterActivity extends AppCompatActivity{
         protected void onPostExecute(String resp) {
             progressDialog.hide();
             if (resp == null) {
+                progressDialog.dismiss();
                 //End Activity
-                setResult(RESULT_OK);
+                setResult(RESULT_OK, getIntent());
                 finish();
             } else {
                 onLoginFailed(resp);

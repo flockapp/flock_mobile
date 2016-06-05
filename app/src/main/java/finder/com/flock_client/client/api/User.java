@@ -14,12 +14,20 @@ public class User {
     private boolean loginSuccess = false;
     private String username;
     private String password;
-
-    public User() throws Exception {}
+    private String fullName;
+    private HttpClient client;
 
     public User(String username, String password) throws Exception {
         this.username = username;
         this.password = password;
+        client = new HttpClient();
+    }
+
+    public User(String username, String password, String fullName) throws Exception {
+        this.username = username;
+        this.password = password;
+        this.fullName = fullName;
+        client = new HttpClient();
     }
 
     public String getToken() {
@@ -31,7 +39,6 @@ public class User {
     }
 
     public JSONObject login() throws Exception {
-        HttpClient client = new HttpClient();
         JSONObject userInfo = new JSONObject();
         userInfo.put("username", username);
         userInfo.put("password", password);
@@ -40,12 +47,11 @@ public class User {
             loginSuccess = true;
             token = resp.getString("data");
         }
-        Log.d("login debug", resp.getString("debug"));
+//        Log.d("login debug", resp.getString("debug"));
         return resp;
     }
 
-    public static JSONObject register(String fullName, String username, String password) throws Exception {
-        HttpClient client = new HttpClient();
+    public JSONObject register() throws Exception {
         JSONObject userInfo = new JSONObject();
         userInfo.put("username", username);
         userInfo.put("fullName", fullName);

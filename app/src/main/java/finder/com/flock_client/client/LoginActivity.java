@@ -35,7 +35,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        progressDialog = new ProgressDialog(LoginActivity.this, R.style.AppTheme);
+        //Give ProgressDialog non-app theme so that it won't take up full screen
+        progressDialog = new ProgressDialog(LoginActivity.this, android.R.style.Theme_Light);
         setContentView(R.layout.activity_login);
 
         progressDialog.setIndeterminate(true);
@@ -63,9 +64,10 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_SIGNUP) {
             if (resultCode == RESULT_OK) {
-                onLoginSuccess();
+                Toast.makeText(getBaseContext(), "Successfully created account", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -96,6 +98,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void onLoginFailed(String msg) {
         Toast.makeText(getBaseContext(), msg, Toast.LENGTH_LONG).show();
+        _loginButton.setEnabled(true);
     }
 
     @Override
@@ -120,11 +123,12 @@ public class LoginActivity extends AppCompatActivity {
                 JSONObject resp = user.login();
                 if (user.loginSuccess()) {
                    success = true;
+                    ((FlockApplication)getApplication()).setCurrToken(resp.getString("data"));
                 }
-                ((FlockApplication)getApplication()).setCurrToken(resp.getString("data"));
                 return new Pair<>(resp.getString("message"), success);
             } catch (Exception e) {
-                Log.d("debug error", e.toString());
+                e.printStackTrace();
+                Log.d("debug error", "system", e);
                 return null;
             }
         }

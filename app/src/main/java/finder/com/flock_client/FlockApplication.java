@@ -2,6 +2,8 @@ package finder.com.flock_client;
 
 import android.content.SharedPreferences;
 
+import finder.com.flock_client.client.api.HttpClient;
+
 /**
  * Created by Daniel on 3/6/16.
  */
