@@ -92,7 +92,9 @@ public class LoginActivity extends AppCompatActivity {
 
     private void onLoginSuccess() {
         _loginButton.setEnabled(true);
-        //Successful Signup Logic
+        //Move onto event dashboard
+        Intent intent = new Intent(this, DashActivity.class);
+        startActivity(intent);
         finish();
     }
 

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <item
+        android:id="@+id/item_dash_search"
+        android:icon="@android:drawable/ic_menu_search"
+        app:showAsAction="ifRoom"
+        android:title=""/>
+    <item
+        android:id="@+id/item_dash_join"
+        android:icon="@drawable/ic_group_add_black_24dp"
+        app:showAsAction="ifRoom"
+        android:title="" />
+    <!--<item-->
+        <!--android:id="@+id/item_dash_settings"-->
+        <!--android:icon="@android:drawable/ic_menu_search"-->
+        <!--app:showAsAction="ifRoom"-->
+        <!--android:title=""/>-->
+</menu>

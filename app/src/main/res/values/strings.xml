@@ -15,4 +15,5 @@
         completions."
     </string>
     <string name="shared_preferences_file">SharedPreferences</string>
+    <string name="title_activity_dash">DashActivity</string>
 </resources>

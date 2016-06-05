@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="finder.com.flock_client">
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".FlockApplication"
@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="finder.com.flock_client.client.SplashActivity"
+            android:name=".client.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,9 +20,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="finder.com.flock_client.client.LoginActivity"></activity>
-        <activity android:name="finder.com.flock_client.client.RegisterActivity"></activity>
-
+        <activity android:name=".client.LoginActivity" />
+        <activity android:name=".client.RegisterActivity" />
+        <activity
+            android:name=".client.DashActivity"
+            android:label="@string/title_activity_dash"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
