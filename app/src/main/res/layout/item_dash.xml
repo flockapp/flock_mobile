@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:background="@color/colorWhite"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/text_event_name"
+        android:text="Event Name"
+        android:layout_marginTop="12dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="24dp"
+        android:layout_width="match_parent"
+        android:textSize="@dimen/text_list"
+        android:textColor="@android:color/primary_text_light"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:layout_below="@id/text_event_name">
+        <TextView
+            android:id="@+id/text_event_date"
+            android:text="DATE"
+            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:textColor="@android:color/secondary_text_dark"
+            android:minWidth="72dp"
+            android:textSize="14dp" />
+        <TextView
+            android:text="TIME"
+            android:id="@+id/text_event_time"
+            android:textColor="@android:color/secondary_text_dark"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:minWidth="48dp"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentRight="true"
+        android:id="@+id/linearLayout">
+
+        <ImageButton
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:scaleType="centerCrop"
+            android:layout_marginRight="20dp"
+            android:background="@android:color/background_light"
+            android:src="@drawable/right_arrow"
+            android:id="@+id/btn_event_right"/>
+
+    </LinearLayout>
+</RelativeLayout>

@@ -1,6 +1,7 @@
 package finder.com.flock_client.client;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -13,14 +14,28 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        String token = ((FlockApplication) getApplication()).getCurrToken();
-        if (token == null) {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
-        } else {
-            Intent intent = new Intent(this, DashActivity.class);
-            startActivity(intent);
+
+        new VerifyUserTask().execute();
+    }
+
+    private class VerifyUserTask extends AsyncTask<Void, Void, Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            String token = ((FlockApplication) getApplication()).getCurrToken();
+            return !token.equals("") && ((FlockApplication) getApplication()).verifyToken();
         }
-        finish();
+
+        @Override
+        public void onPostExecute(Boolean success) {
+            if (success) {
+                Intent intent = new Intent(getBaseContext(), DashActivity.class);
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+                startActivity(intent);
+            }
+            finish();
+        }
     }
 }

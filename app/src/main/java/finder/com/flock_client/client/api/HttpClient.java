@@ -13,14 +13,13 @@ import okhttp3.Response;
 /**
  * Created by Daniel on 2/6/16.
  */
-
 public class HttpClient {
 
     private final OkHttpClient client = new OkHttpClient();
     private final MediaType contentType = MediaType.parse("application/json");
 
     private String token = "";
-    private String baseUrl = "http://52.39.178.10:3000";
+    private String baseUrl = "http://52.40.248.5:3000";
 
     public HttpClient() {}
 
@@ -73,5 +72,9 @@ public class HttpClient {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getToken() {
+        return token;
     }
 }
