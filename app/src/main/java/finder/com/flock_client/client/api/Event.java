@@ -2,6 +2,10 @@ package finder.com.flock_client.client.api;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 /**
  * Created by Daniel on 6/6/16.
  */
@@ -13,11 +17,13 @@ public class Event {
 
     private double lat, lng;
     private String name;
+    private int cost;
     private long time;
 
-    public Event(String token, String name, long time, double lat, double lng) {
+    public Event(String token, String name, long time, int cost, double lat, double lng) {
         this.client = new HttpClient(token);
         this.name = name;
+        this.cost = cost;
         this.time = time;
         this.lat = lat;
         this.lng = lng;
@@ -39,6 +45,7 @@ public class Event {
     public JSONObject createEvent() throws Exception {
         JSONObject dataObj = new JSONObject();
         dataObj.put("name", name);
+        dataObj.put("cost", cost);
         dataObj.put("time", time);
         dataObj.put("lat", lat);
         dataObj.put("lng", lng);
@@ -49,14 +56,17 @@ public class Event {
         return name;
     }
 
-    //TO-IMPLEMENT: getDate() and getTime()
-
     public String getDate() {
-        return "";
+        Date date = new Date(this.time*1000L); //Convert to ms;
+        SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd");
+        sdf.setTimeZone(TimeZone.getDefault());
+        return sdf.format(date);
     }
 
     public String getTime() {
-        return "";
+        Date date = new Date(this.time*1000L); //Convert to ms;
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mma");
+        sdf.setTimeZone(TimeZone.getDefault());
+        return sdf.format(date);
     }
-
 }

@@ -7,4 +7,5 @@
     <dimen name="height_button">42dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_list">18sp</dimen>
+    <dimen name="padding_horiz">24dp</dimen>
 </resources>

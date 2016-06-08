@@ -1,6 +1,7 @@
 package finder.com.flock_client.client;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -25,14 +26,13 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import finder.com.flock_client.FlockApplication;
 import finder.com.flock_client.R;
 import finder.com.flock_client.client.api.Event;
 import finder.com.flock_client.client.api.EventList;
 
 public class DashActivity extends AppCompatActivity {
-    @BindView(R.id.btn_create_event)
-    public FloatingActionButton createEventButton;
     @BindView(R.id.list_dash)
     public ListView dashList;
 
@@ -43,9 +43,16 @@ public class DashActivity extends AppCompatActivity {
 
         new FetchEventListTask().execute();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_dash);
+        toolbar.setTitle("Events");
         setSupportActionBar(toolbar);
 
         ButterKnife.bind(this);
+    }
+
+    @OnClick(R.id.btn_to_event_create)
+    public void onCreateEventButtonClicked() {
+        Intent intent = new Intent(this, CreateEventActivity.class);
+        startActivity(intent);
     }
 
     @Override

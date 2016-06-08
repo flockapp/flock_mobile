@@ -20,12 +20,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".client.LoginActivity" />
-        <activity android:name=".client.RegisterActivity" />
+        <activity
+            android:name=".client.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".client.RegisterActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".client.DashActivity"
-            android:label="@string/title_activity_dash"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".client.CreateEventActivity"
+            android:label="Create Event"/>
+        <activity
+            android:name=".client.GuestInviteActivity"
+            android:label="Invite Guests"/>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC-igsaEtIjzxHbWPGLgPQqRl6j_X8hDSc"/>
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>
