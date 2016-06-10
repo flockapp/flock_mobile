@@ -58,4 +58,8 @@ public class User {
         userInfo.put("password", password);
         return client.makePostRequest("/auth/register", userInfo);
     }
+
+    public String getFullName() {
+        return fullName;
+    }
 }

@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <ScrollView
+        android:id="@+id/scroll_guest_list"
+        android:layout_height="420dp"
+        android:layout_width="match_parent">
+        <ListView
+            android:id="@+id/list_guest_invite"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent">
 
-</LinearLayout>
+        </ListView>
+    </ScrollView>
+    <Button
+        android:text="Next"
+        android:id="@+id/btn_to_scheduler"
+        android:layout_below="@id/scroll_guest_list"
+        android:layout_alignEnd="@id/scroll_guest_list"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
+    <Button
+        android:id="@+id/btn_invite_guest"
+        
+        android:layout_below="@id/scroll_guest_list"
+        android:text="Invite"
+        android:layout_toLeftOf="@id/btn_to_scheduler"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
+
+</RelativeLayout>

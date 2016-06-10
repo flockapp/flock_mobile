@@ -37,7 +37,7 @@ public class RegisterActivity extends AppCompatActivity{
         super.onCreate(b);
         setContentView(R.layout.activity_register);
 
-        progressDialog = new ProgressDialog(RegisterActivity.this, android.R.style.Theme_Light);
+        progressDialog = new ProgressDialog(RegisterActivity.this, android.R.style.Theme_Material_Light_Dialog);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("Creating User...");
 

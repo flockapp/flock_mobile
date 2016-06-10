@@ -3,6 +3,7 @@ package finder.com.flock_client.client;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,8 +12,13 @@ import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -25,11 +31,15 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DateFormatSymbols;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,19 +47,28 @@ import butterknife.OnClick;
 import finder.com.flock_client.FlockApplication;
 import finder.com.flock_client.R;
 import finder.com.flock_client.client.api.Event;
+import finder.com.flock_client.client.api.Type;
+import finder.com.flock_client.client.api.TypeList;
 
 /**
  * Created by Daniel on 7/6/16.
  */
 
 public class CreateEventActivity extends AppCompatActivity implements OnMapReadyCallback {
-    @BindView(R.id.input_event_name) public EditText eventNameText;
-    @BindView(R.id.seekbar_event_cost) public SeekBar seekBar;
-    @BindView(R.id.label_event_date) public TextView eventDateLabel;
-    @BindView(R.id.label_event_time) public TextView eventTimeLabel;
+    @BindView(R.id.input_event_name)
+    public EditText eventNameText;
+    @BindView(R.id.seekbar_event_cost)
+    public SeekBar seekBar;
+    @BindView(R.id.label_event_date)
+    public TextView eventDateLabel;
+    @BindView(R.id.label_event_time)
+    public TextView eventTimeLabel;
+    @BindView(R.id.list_event_type)
+    public ListView eventTypeList;
 
     private LatLng eventLoc;
     private Calendar eventCalendar;
+    private ArrayList<Integer> typeIds = new ArrayList<>();
 
     private int costVal = 2;
 
@@ -59,13 +78,16 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         setContentView(R.layout.activity_create_event);
         ButterKnife.bind(this);
 
+        //Fetches and populates type list
+        new FetchTypesTask().execute();
 
+        //Init map fragment
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map_create_event);
         mapFragment.getMapAsync(this);
 
         eventCalendar = Calendar.getInstance();
 
-        seekBar.setProgress(costVal); //Default Cost Value
+        seekBar.setProgress(costVal); //Default Cost Value of seekbar
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -73,10 +95,12 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
         });
     }
 
@@ -94,6 +118,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
 
     @OnClick(R.id.btn_create_event)
     public void onCreateEventButtonClicked() {
+        Log.d("debug", typeIds.toString());
         if (validateEventDetails()) {
             new CreateEventTask(((FlockApplication) getApplication()).getCurrToken(),
                     eventNameText.getText().toString(), //Name
@@ -149,7 +174,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             eventCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
             eventCalendar.set(Calendar.MINUTE, minute);
-            eventTimeLabel.setText(padDigits(hourOfDay)+":"+padDigits(minute));
+            eventTimeLabel.setText(padDigits(hourOfDay) + ":" + padDigits(minute));
         }
     }
 
@@ -169,7 +194,65 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             eventCalendar.set(Calendar.MONTH, month);
             eventCalendar.set(Calendar.YEAR, year);
             eventCalendar.set(Calendar.DAY_OF_MONTH, day);
-            eventDateLabel.setText(new DateFormatSymbols().getMonths()[month]+" "+padDigits(day)+", "+year);
+            eventDateLabel.setText(new DateFormatSymbols().getMonths()[month] + " " + padDigits(day) + ", " + year);
+        }
+    }
+
+    private class FetchTypesTask extends AsyncTask<Void, Void, JSONArray> {
+
+        @Override
+        protected JSONArray doInBackground(Void... params) {
+
+            TypeList typeList = new TypeList(((FlockApplication) getApplication()).getCurrToken());
+            try {
+                JSONArray typeArray = typeList.getTypes();
+                return typeArray;
+            } catch (Exception e) {
+                Log.d("debug", "error", e);
+                return null;
+            }
+        }
+
+        public void onPostExecute(JSONArray resp) {
+            if (resp != null) {
+                ArrayList<Pair<Type, Type>> typeArray = new ArrayList<>();
+                try {
+                    for (int i = 0; i < resp.length(); i += 2) {
+                        JSONObject firstObj = resp.getJSONObject(i);
+                        if (i + 1 < resp.length()) {
+                            JSONObject secondObj = resp.getJSONObject(i + 1);
+                            typeArray.add(i/2, new Pair<>(
+                                    new Type(firstObj.getInt("id"), firstObj.getString("name")),
+                                    new Type(secondObj.getInt("id"), secondObj.getString("name"))
+                            ));
+                        } else {
+                            typeArray.add(i/2, new Pair<>(
+                                    new Type(firstObj.getInt("id"), firstObj.getString("name")),
+                                    new Type(-1, "")
+                            ));
+                        }
+                    }
+                    TypeListAdapter la = new TypeListAdapter(getBaseContext(), R.layout.item_event_type, typeArray);
+                    eventTypeList.setAdapter(la);
+                    la.notifyDataSetChanged();
+                } catch (Exception e) {
+                    Log.d("debug", "error", e);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Client Error", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                }
+            } else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "Client Error", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
         }
     }
 
@@ -193,7 +276,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            Event event = new Event(token, name, time, cost, lat, lng);
+            Event event = new Event(token, name, time, cost, typeIds.toArray(new Integer[typeIds.size()]), lat, lng);
             try {
                 JSONObject resp = event.createEvent();
                 return resp;
@@ -226,10 +309,84 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
+    private class TypeListAdapter extends ArrayAdapter<Pair<Type, Type>> {
+        private int layout;
+
+        public TypeListAdapter(Context context, int resource, List<Pair<Type, Type>> objects) {
+            super(context, resource, objects);
+            layout = resource;
+
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            ViewHolder mainViewHolder = null;
+            if (convertView == null) {
+                LayoutInflater inflater = LayoutInflater.from(getBaseContext());
+                convertView = inflater.inflate(layout, parent, false);
+                ViewHolder viewHolder = new ViewHolder();
+                viewHolder.firstType = (TextView) convertView.findViewById(R.id.type_event_item_1);
+                viewHolder.secondType = (TextView) convertView.findViewById(R.id.type_event_item_2);
+                convertView.setTag(viewHolder);
+            }
+            mainViewHolder = (ViewHolder) convertView.getTag();
+
+            //Ensuring that both views are visible
+            mainViewHolder.firstType.setVisibility(View.VISIBLE);
+            mainViewHolder.secondType.setVisibility(View.VISIBLE);
+
+            Pair<Type, Type> row = getItem(position);
+            mainViewHolder.firstType.setText(row.first.getName());
+            mainViewHolder.firstType.setTag(row.first.getId());
+            //Type textview click listener
+            mainViewHolder.firstType.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("debug", typeIds.toString());
+                    if (!typeIds.contains(v.getTag())) {
+                        //If type not in array
+                        typeIds.add((int) v.getTag());
+                        v.setBackgroundColor(getResources().getColor(R.color.colorAccent, getTheme()));
+                    } else {
+                        typeIds.remove(v.getTag());
+                        v.setBackgroundColor(getResources().getColor(R.color.colorGray, getTheme()));
+                    }
+                }
+            });
+            if (!row.second.getName().equals("")) {
+                mainViewHolder.secondType.setText(row.second.getName());
+                mainViewHolder.secondType.setTag(row.second.getId());
+                mainViewHolder.secondType.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d("debug", typeIds.toString());
+                        if (!typeIds.contains(v.getTag())) {
+                            //If type not in array
+                            typeIds.add((int) v.getTag());
+                            v.setBackgroundColor(getResources().getColor(R.color.colorAccent, getTheme()));
+                        } else {
+                            typeIds.remove(v.getTag());
+                            v.setBackgroundColor(getResources().getColor(R.color.colorGray, getTheme()));
+                        }
+                    }
+                });
+            } else {
+                mainViewHolder.secondType.setVisibility(View.INVISIBLE);
+            }
+            return convertView;
+        }
+
+        private class ViewHolder {
+            TextView firstType;
+            TextView secondType;
+        }
+
+    }
+
     private String padDigits(int time) {
         if (time < 10) {
-            return "0"+time;
+            return "0" + time;
         }
-        return ""+time;
+        return "" + time;
     }
 }

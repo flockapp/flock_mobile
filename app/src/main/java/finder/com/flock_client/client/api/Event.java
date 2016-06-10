@@ -1,5 +1,6 @@
 package finder.com.flock_client.client.api;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -19,12 +20,14 @@ public class Event {
     private String name;
     private int cost;
     private long time;
+    private Integer[] types;
 
-    public Event(String token, String name, long time, int cost, double lat, double lng) {
+    public Event(String token, String name, long time, int cost, Integer[] types, double lat, double lng) {
         this.client = new HttpClient(token);
         this.name = name;
         this.cost = cost;
         this.time = time;
+        this.types = types;
         this.lat = lat;
         this.lng = lng;
     }
@@ -48,6 +51,7 @@ public class Event {
         dataObj.put("cost", cost);
         dataObj.put("time", time);
         dataObj.put("lat", lat);
+        dataObj.put("types", new JSONArray(types));
         dataObj.put("lng", lng);
         return client.makePostRequest("/v0/api/events", dataObj);
     }

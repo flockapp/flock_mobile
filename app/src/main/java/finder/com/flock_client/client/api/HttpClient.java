@@ -19,7 +19,7 @@ public class HttpClient {
     private final MediaType contentType = MediaType.parse("application/json");
 
     private String token = "";
-    private String baseUrl = "http://52.37.84.13:3000";
+    private String baseUrl = "http://192.168.0.101:3000";
 
     public HttpClient() {}
 

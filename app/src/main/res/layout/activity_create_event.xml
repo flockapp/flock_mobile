@@ -24,6 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/input_event_name" />
+
         </android.support.design.widget.TextInputLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -40,6 +41,7 @@
                 android:layout_height="wrap_content"
                 android:text="Pick Date"
                 />
+
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -58,30 +60,54 @@
                 android:text="Pick Time"
                 />
         </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/label_seekbar_cost"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textAlignment="center"
+                android:textSize="18sp"
+                android:text="Cost" />
             <SeekBar
                 android:id="@+id/seekbar_event_cost"
-                android:layout_width="match_parent"
+                android:layout_toRightOf="@id/label_seekbar_cost"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:max="4"/>
+                android:max="4" />
             <TextView
                 android:id="@+id/text_seekbar_cost_lower"
                 android:layout_width="20sp"
                 android:text="0"
+                android:layout_marginLeft="10dp"
                 android:layout_below="@id/seekbar_event_cost"
-                android:layout_gravity="start"
-                android:textSize="20sp"
+                android:layout_alignStart="@id/seekbar_event_cost"
+                android:textSize="18sp"
                 android:layout_height="wrap_content" />
-
             <TextView android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="4"
-                android:textSize="20sp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:id="@+id/textView2" />
+                android:layout_marginRight="10dp"
+                android:textSize="18sp"
+                android:layout_alignEnd="@id/seekbar_event_cost"
+                android:layout_below="@id/seekbar_event_cost" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/label_type_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Type"
+                android:textSize="18sp"/>
+            <ListView
+                android:layout_below="@id/label_type_list"
+                android:id="@+id/list_event_type"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"/>
         </RelativeLayout>
         <fragment
             android:id="@+id/map_create_event"

@@ -36,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //Give ProgressDialog non-app theme so that it won't take up full screen
-        progressDialog = new ProgressDialog(LoginActivity.this, android.R.style.Theme_Light);
+        progressDialog = new ProgressDialog(LoginActivity.this, android.R.style.Theme_Material_Light_Dialog);
         setContentView(R.layout.activity_login);
 
         progressDialog.setIndeterminate(true);
