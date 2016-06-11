@@ -4,6 +4,9 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
+import java.net.URL;
+
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -14,12 +17,13 @@ import okhttp3.Response;
  * Created by Daniel on 2/6/16.
  */
 public class HttpClient {
+    public static final String baseUrl = "http://52.37.84.13:3000";
+    public static final String baseHost = "52.37.84.13";
 
     private final OkHttpClient client = new OkHttpClient();
     private final MediaType contentType = MediaType.parse("application/json");
 
     private String token = "";
-    private String baseUrl = "http://192.168.0.101:3000";
 
     public HttpClient() {}
 
@@ -38,6 +42,14 @@ public class HttpClient {
     public JSONObject makeGetRequest(String suffix) throws Exception {
         Request.Builder builder = new Request.Builder()
                 .url(baseUrl+suffix)
+                .addHeader("Authorization", token)
+                .get();
+        return makeRequest(builder);
+    }
+
+    public JSONObject makeGetRequest(HttpUrl url) throws Exception {
+        Request.Builder builder = new Request.Builder()
+                .url(url)
                 .addHeader("Authorization", token)
                 .get();
         return makeRequest(builder);

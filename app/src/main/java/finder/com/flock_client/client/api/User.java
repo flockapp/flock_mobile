@@ -47,7 +47,6 @@ public class User {
             loginSuccess = true;
             token = resp.getString("data");
         }
-//        Log.d("login debug", resp.getString("debug"));
         return resp;
     }
 
