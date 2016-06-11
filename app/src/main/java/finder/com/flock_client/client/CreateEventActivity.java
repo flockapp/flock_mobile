@@ -198,38 +198,30 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
-    private class FetchTypesTask extends AsyncTask<Void, Void, JSONArray> {
+    private class FetchTypesTask extends AsyncTask<Void, Void, ArrayList<Type>> {
 
         @Override
-        protected JSONArray doInBackground(Void... params) {
+        protected ArrayList<Type> doInBackground(Void... params) {
 
             TypeList typeList = new TypeList(((FlockApplication) getApplication()).getCurrToken());
             try {
-                JSONArray typeArray = typeList.getTypes();
-                return typeArray;
+                typeList.getTypes();
+                return typeList.getTypeList();
             } catch (Exception e) {
                 Log.d("debug", "error", e);
                 return null;
             }
         }
 
-        public void onPostExecute(JSONArray resp) {
+        public void onPostExecute(ArrayList<Type> resp) {
             if (resp != null) {
                 ArrayList<Pair<Type, Type>> typeArray = new ArrayList<>();
                 try {
-                    for (int i = 0; i < resp.length(); i += 2) {
-                        JSONObject firstObj = resp.getJSONObject(i);
-                        if (i + 1 < resp.length()) {
-                            JSONObject secondObj = resp.getJSONObject(i + 1);
-                            typeArray.add(i/2, new Pair<>(
-                                    new Type(firstObj.getInt("id"), firstObj.getString("name")),
-                                    new Type(secondObj.getInt("id"), secondObj.getString("name"))
-                            ));
+                    for (int i = 0; i < resp.size(); i += 2) {
+                        if (i + 1 < resp.size()) {
+                            typeArray.add(new Pair<>(resp.get(i), resp.get(i+1)));
                         } else {
-                            typeArray.add(i/2, new Pair<>(
-                                    new Type(firstObj.getInt("id"), firstObj.getString("name")),
-                                    new Type(-1, "")
-                            ));
+                            typeArray.add(new Pair<>(resp.get(i), new Type(-1, "")));
                         }
                     }
                     TypeListAdapter la = new TypeListAdapter(getBaseContext(), R.layout.item_event_type, typeArray);
@@ -353,7 +345,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                     }
                 }
             });
-            if (!row.second.getName().equals("")) {
+            if (!(row.second.getId() == -1)) {
                 mainViewHolder.secondType.setText(row.second.getName());
                 mainViewHolder.secondType.setTag(row.second.getId());
                 mainViewHolder.secondType.setOnClickListener(new View.OnClickListener() {
