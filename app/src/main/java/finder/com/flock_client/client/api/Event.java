@@ -73,4 +73,8 @@ public class Event {
         sdf.setTimeZone(TimeZone.getDefault());
         return sdf.format(date);
     }
+
+    public int getId() {
+        return id;
+    }
 }

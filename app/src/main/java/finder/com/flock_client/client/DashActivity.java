@@ -86,14 +86,20 @@ public class DashActivity extends AppCompatActivity {
             }
             mainViewHolder = (ViewHolder) convertView.getTag();
             //Render viewholder content
-            Event event = getItem(position);
+            final Event event = getItem(position);
             mainViewHolder.name.setText(event.getName());
             mainViewHolder.date.setText(event.getDate());
             mainViewHolder.time.setText(event.getTime());
             mainViewHolder.rightButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    //Start EventActivity
                     Log.d("debug", "right button clicked");
+                    Intent intent = new Intent(DashActivity.this, EventActivity.class);
+                    intent.putExtra("eventId", event.getId());
+                    intent.putExtra("eventName", event.getName());
+                    intent.putExtra("isHost", true);
+                    startActivity(intent);
                 }
             });
             return convertView;

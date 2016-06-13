@@ -1,6 +1,8 @@
 package finder.com.flock_client.client;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,9 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.appinvite.AppInviteInvitation;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +27,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import finder.com.flock_client.FlockApplication;
 import finder.com.flock_client.R;
 import finder.com.flock_client.client.api.Guest;
@@ -33,9 +39,12 @@ import finder.com.flock_client.client.api.User;
  */
 
 public class GuestInviteActivity extends AppCompatActivity {
+    private final int REQUEST_INVITE = 72;
+
     @BindView(R.id.list_guest_invite) public ListView guestInviteList;
 
     private int eventId;
+
 
     @Override
     public void onCreate(Bundle b) {
@@ -52,6 +61,36 @@ public class GuestInviteActivity extends AppCompatActivity {
             //Add first-time text
         }
         new FetchGuestListTask().execute();
+    }
+
+    @OnClick(R.id.btn_invite_guest)
+    public void onInviteGuestButtonClicked() {
+        //Firebase invitations
+        Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invite_event_title))
+                .setEmailSubject(getString(R.string.invite_event_title))
+                .setEmailHtmlContent("<h3>Event Invitation</h3><p>You've been invited to a Flock event</p>")
+                .setDeepLink(Uri.parse(getString(R.string.invite_event_url)))
+                .setCallToActionText("Join Now!")
+                .build();
+        intent.putExtra("eventId", eventId);
+        startActivityForResult(intent, REQUEST_INVITE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d("debug", "onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
+        if (requestCode == REQUEST_INVITE) {
+            if (resultCode == RESULT_OK) {
+                // Get the invitation IDs of all sent messages
+                String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
+                for (String id : ids) {
+                    Log.d("debug", "onActivityResult: sent invitation " + id);
+                }
+            } else {
+                Toast.makeText(getApplicationContext(), "Failed to send invites", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     private class GuestListAdapter extends ArrayAdapter<Guest> {

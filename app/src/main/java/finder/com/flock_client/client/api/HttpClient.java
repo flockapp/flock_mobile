@@ -17,8 +17,8 @@ import okhttp3.Response;
  * Created by Daniel on 2/6/16.
  */
 public class HttpClient {
-    public static final String baseUrl = "http://52.37.84.13:3000";
-    public static final String baseHost = "52.37.84.13";
+    public static final String baseHost = "172.19.197.164";
+    public static final String baseUrl = "http://"+baseHost+":3000";
 
     private final OkHttpClient client = new OkHttpClient();
     private final MediaType contentType = MediaType.parse("application/json");

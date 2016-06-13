@@ -1,7 +1,11 @@
 package finder.com.flock_client;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 
@@ -43,6 +47,17 @@ public class FlockApplication extends android.app.Application {
             return false;
         }
         return false;
+    }
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        boolean networkAvailable = activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        if (!networkAvailable) {
+            Toast.makeText(getBaseContext(), "No internet connection", Toast.LENGTH_LONG).show();
+        }
+        return networkAvailable;
     }
 
     public String getCurrToken() {

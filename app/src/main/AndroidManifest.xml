@@ -3,6 +3,7 @@
     package="finder.com.flock_client">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".FlockApplication"
@@ -15,6 +16,16 @@
             android:name=".client.SplashActivity"
             android:theme="@style/SplashTheme">
             <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="event_invite.com"
+                    android:scheme="http" />
+            </intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -22,25 +33,31 @@
         </activity>
         <activity
             android:name=".client.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".client.RegisterActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".client.RegisterActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".client.DashActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".client.CreateEventActivity"
-            android:label="Create Event"/>
+            android:label="Create Event" />
         <activity
             android:name=".client.GuestInviteActivity"
-            android:label="Invite Guests"/>
+            android:label="Invite Guests" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC-igsaEtIjzxHbWPGLgPQqRl6j_X8hDSc"/>
+            android:value="AIzaSyC-igsaEtIjzxHbWPGLgPQqRl6j_X8hDSc" />
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".client.EventActivity"
+            android:label="@string/title_activity_event"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

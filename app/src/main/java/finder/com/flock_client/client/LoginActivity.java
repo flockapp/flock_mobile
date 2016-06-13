@@ -35,6 +35,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((FlockApplication) getApplication()).isNetworkAvailable();
+
         //Give ProgressDialog non-app theme so that it won't take up full screen
         progressDialog = new ProgressDialog(LoginActivity.this, android.R.style.Theme_Material_Light_Dialog);
         setContentView(R.layout.activity_login);
@@ -124,8 +126,8 @@ public class LoginActivity extends AppCompatActivity {
                 User user = new User(username, password);
                 JSONObject resp = user.login();
                 if (user.loginSuccess()) {
-                   success = true;
-                    ((FlockApplication)getApplication()).setCurrToken(resp.getString("data"));
+                    success = true;
+                    ((FlockApplication) getApplication()).setCurrToken(resp.getString("data"));
                 }
                 return new Pair<>(resp.getString("message"), success);
             } catch (Exception e) {
