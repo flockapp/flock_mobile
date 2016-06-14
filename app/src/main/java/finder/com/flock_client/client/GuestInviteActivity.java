@@ -70,7 +70,6 @@ public class GuestInviteActivity extends AppCompatActivity {
                 .setEmailSubject(getString(R.string.invite_event_title))
                 .setEmailHtmlContent("<h3>Event Invitation</h3><p>You've been invited to a Flock event</p>")
                 .setDeepLink(Uri.parse(getString(R.string.invite_event_url)))
-                .setCallToActionText("Join Now!")
                 .build();
         intent.putExtra("eventId", eventId);
         startActivityForResult(intent, REQUEST_INVITE);

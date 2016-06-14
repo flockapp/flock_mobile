@@ -55,7 +55,7 @@ public class FlockApplication extends android.app.Application {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         boolean networkAvailable = activeNetworkInfo != null && activeNetworkInfo.isConnected();
         if (!networkAvailable) {
-            Toast.makeText(getBaseContext(), "No internet connection", Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), "No internet connection", Toast.LENGTH_LONG).show();
         }
         return networkAvailable;
     }
