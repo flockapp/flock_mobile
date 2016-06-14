@@ -53,6 +53,9 @@ public class DashActivity extends AppCompatActivity {
     @BindView(R.id.toolbar_dash)
     public Toolbar toolbar;
 
+    @BindView(R.id.empty_dash)
+    public TextView emptyText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +63,7 @@ public class DashActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         new FetchEventListTask().execute();
+        dashList.setEmptyView(emptyText);
         toolbar.setTitle("Events");
         setSupportActionBar(toolbar);
     }

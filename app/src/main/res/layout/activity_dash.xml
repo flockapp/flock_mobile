@@ -1,47 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:orientation="vertical"
-    tools:context="finder.com.flock_client.client.DashActivity">
-
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar_dash"
-            android:titleTextColor="@color/colorWhite"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/holo_green_light"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </android.support.design.widget.AppBarLayout>
-
+    android:orientation="vertical">
     <RelativeLayout
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         android:orientation="vertical"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        android:id="@+id/layout_dash"
+        tools:context="finder.com.flock_client.client.DashActivity"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/layout_appbar_dash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_dash"
+                android:titleTextColor="@color/colorWhite"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/holo_green_light"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </android.support.design.widget.AppBarLayout>
+
         <ListView
             android:id="@+id/list_dash"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        </ListView>
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/btn_to_event_create"
-            android:layout_alignBottom="@id/list_dash"
-            android:layout_alignEnd="@id/list_dash"
-            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true" />
+        <TextView
+            android:layout_below="@id/layout_appbar_dash"
+            android:id="@+id/empty_dash"
+            android:text="@string/empty_list_dash"
+            android:textSize="@dimen/text_empty"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/fab_margin"
-            android:src="@android:drawable/ic_input_add" />
-    </RelativeLayout>
+            android:layout_width="match_parent"
+            android:gravity="center">
+        </TextView>
 
-</LinearLayout>
+    </RelativeLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_to_event_create"
+        android:layout_alignEnd="@id/layout_dash"
+        android:layout_alignBottom="@id/layout_dash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@android:drawable/ic_input_add" />
+</RelativeLayout>

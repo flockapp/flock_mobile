@@ -23,5 +23,7 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="label_search_dash">Events</string>
+    <string name="empty_list_dash">No events found</string>
+    <string name="empty_list_guests">No guests found</string>
 
 </resources>

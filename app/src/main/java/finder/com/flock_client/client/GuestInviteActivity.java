@@ -42,6 +42,7 @@ public class GuestInviteActivity extends AppCompatActivity {
     private final int REQUEST_INVITE = 72;
 
     @BindView(R.id.list_guest_invite) public ListView guestInviteList;
+    @BindView(R.id.empty_guest) public TextView emptyGuestText;
 
     private int eventId;
 
@@ -52,6 +53,7 @@ public class GuestInviteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_guest_invite);
         ButterKnife.bind(this);
 
+        guestInviteList.setEmptyView(emptyGuestText);
         Bundle extras = getIntent().getExtras();
         eventId = extras.getInt("eventId", -1);
         if (eventId == -1) {
