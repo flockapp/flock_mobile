@@ -25,5 +25,7 @@
     <string name="label_search_dash">Events</string>
     <string name="empty_list_dash">No events found</string>
     <string name="empty_list_guests">No guests found</string>
+    <string name="empty_list_activities">No activities found</string>
+    <string name="empty_list_ideas">No ideas found</string>
 
 </resources>

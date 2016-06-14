@@ -1,21 +1,32 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    >
+    android:layout_height="match_parent">
+    <!--android:paddingBottom="@dimen/activity_vertical_margin"-->
+    <!--android:paddingLeft="@dimen/activity_horizontal_margin"-->
+    <!--android:paddingRight="@dimen/activity_horizontal_margin"-->
+    <!--android:paddingTop="@dimen/activity_vertical_margin">-->
     <!-- Remember to add context tags -->
-    <ListView
-        android:id="@+id/list_activities"
+    <RelativeLayout
+        android:id="@+id/layout_event_activities"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/list_activities"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <TextView
+            android:id="@+id/empty_activities"
+            android:text="@string/empty_list_activities"
+            android:textSize="@dimen/text_empty"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
+    </RelativeLayout>
     <android.support.design.widget.FloatingActionButton
-        android:layout_alignBottom="@id/list_activities"
-        android:layout_alignEnd="@id/list_activities"
+        android:layout_alignBottom="@id/layout_event_activities"
+        android:layout_alignEnd="@id/layout_event_activities"
         android:id="@+id/btn_add_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
