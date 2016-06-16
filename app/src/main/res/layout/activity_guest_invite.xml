@@ -29,7 +29,6 @@
         android:layout_width="wrap_content"/>
     <Button
         android:id="@+id/btn_invite_guest"
-        
         android:layout_below="@id/layout_guest_invite"
         android:text="Invite"
         android:layout_toLeftOf="@id/btn_to_scheduler"

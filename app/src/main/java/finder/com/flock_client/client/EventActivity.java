@@ -1,5 +1,6 @@
 package finder.com.flock_client.client;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -88,7 +89,17 @@ public class EventActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.fragment_event_activities, container, false);
+            View view = inflater.inflate(R.layout.fragment_event_activities, container, false);
+            FloatingActionButton addActivityButton = (FloatingActionButton) view.findViewById(R.id.btn_add_activity);
+            addActivityButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(EventActivity.this, EventSchedulerActivity.class);
+                    intent.putExtra("eventId", eventId);
+                    startActivity(intent);
+                }
+            });
+            return view;
         }
     }
 

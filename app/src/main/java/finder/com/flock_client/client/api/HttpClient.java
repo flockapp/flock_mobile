@@ -4,8 +4,6 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
-import java.net.URL;
-
 import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -17,8 +15,8 @@ import okhttp3.Response;
  * Created by Daniel on 2/6/16.
  */
 public class HttpClient {
-//    public static final String baseHost = "172.19.197.164";
-    public static final String baseHost = "52.37.84.13";
+    public static final String baseHost = "192.168.0.104";
+//    public static final String baseHost = "52.37.84.13";
     public static final String baseUrl = "http://"+baseHost+":3000";
 
     private final OkHttpClient client = new OkHttpClient();
