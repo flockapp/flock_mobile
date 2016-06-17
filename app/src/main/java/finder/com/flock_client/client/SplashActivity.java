@@ -26,8 +26,6 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        new VerifyUserTask().execute();
-
         //Firebase invites
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
@@ -50,6 +48,7 @@ public class SplashActivity extends AppCompatActivity implements GoogleApiClient
                                 }
                             }
                         });
+        new VerifyUserTask().execute();
     }
 
     //

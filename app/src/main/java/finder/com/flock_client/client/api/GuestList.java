@@ -24,14 +24,7 @@ public class GuestList {
 
     public ArrayList<Guest> get() throws Exception {
         guests.clear();
-        HttpUrl url = new HttpUrl.Builder()
-                .scheme("http")
-                .host(HttpClient.baseHost) //Regex to isolate host
-                .port(3000)
-                .addEncodedPathSegment("/v0/api/guests")
-                .addQueryParameter("eventId", eventId+"")
-                .build();
-        JSONObject resp = client.makeGetRequest(url);
+        JSONObject resp = client.makeGetRequest("/v0/api/events/"+eventId+"/guests");
         if (resp.getBoolean("success")) {
             JSONArray respData = resp.getJSONArray("data");
             for (int i = 0; i < respData.length(); i++) {

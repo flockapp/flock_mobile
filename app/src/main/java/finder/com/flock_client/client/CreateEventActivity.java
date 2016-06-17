@@ -31,7 +31,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,7 +38,9 @@ import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,7 +69,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
 
     private LatLng eventLoc;
     private Calendar eventCalendar;
-    private ArrayList<Integer> typeIds = new ArrayList<>();
+    private HashMap<Integer, String> typeMap = new HashMap<>();
 
     private int costVal = 2;
 
@@ -118,12 +119,23 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
 
     @OnClick(R.id.btn_create_event)
     public void onCreateEventButtonClicked() {
-        Log.d("debug", typeIds.toString());
+        Log.d("debug", typeMap.toString());
+        ArrayList<Type> typeArrayList = new ArrayList<>();
+
+        //Iterates through typeMaps HashMap
+        Iterator typeIterator = typeMap.entrySet().iterator();
+        while (typeIterator.hasNext()) {
+            Map.Entry pair = (Map.Entry)typeIterator.next();
+            typeArrayList.add(new Type((int)pair.getKey(), (String) pair.getValue()));
+            typeIterator.remove(); // avoids a ConcurrentModificationException
+        }
+
         if (validateEventDetails()) {
             new CreateEventTask(((FlockApplication) getApplication()).getCurrToken(),
                     eventNameText.getText().toString(), //Name
                     eventCalendar.getTime().getTime(), //Time in unix time
                     costVal,
+                    typeArrayList,
                     eventLoc.latitude,
                     eventLoc.longitude
             ).execute();
@@ -145,6 +157,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
 
     @Override
     public void onMapReady(final GoogleMap googleMap) {
+        //TODO: Update zoom latlng to current location
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(22.396428, 114.109497), 12));
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -254,21 +267,23 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         private String name;
         private long time;
         private int cost;
+        private ArrayList<Type> types;
         private double lat;
         private double lng;
 
-        public CreateEventTask(String token, String name, long time, int cost, double lat, double lng) {
+        public CreateEventTask(String token, String name, long time, int cost, ArrayList<Type> types, double lat, double lng) {
             this.token = token;
             this.name = name;
             this.time = time;
             this.cost = cost;
+            this.types = types;
             this.lat = lat;
             this.lng = lng;
         }
 
         @Override
         protected JSONObject doInBackground(Void... params) {
-            Event event = new Event(token, name, time, cost, typeIds.toArray(new Integer[typeIds.size()]), lat, lng);
+            Event event = new Event(token, name, time, cost, types, lat, lng);
             try {
                 JSONObject resp = event.createEvent();
                 return resp;
@@ -334,15 +349,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             mainViewHolder.firstType.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("debug", typeIds.toString());
-                    if (!typeIds.contains(v.getTag())) {
-                        //If type not in array
-                        typeIds.add((int) v.getTag());
-                        v.setBackgroundColor(getResources().getColor(R.color.colorAccent, getTheme()));
-                    } else {
-                        typeIds.remove(v.getTag());
-                        v.setBackgroundColor(getResources().getColor(R.color.colorGray, getTheme()));
-                    }
+                    typeToggle((TextView)v);
                 }
             });
             if (!(row.second.getId() == -1)) {
@@ -351,21 +358,24 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                 mainViewHolder.secondType.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.d("debug", typeIds.toString());
-                        if (!typeIds.contains(v.getTag())) {
-                            //If type not in array
-                            typeIds.add((int) v.getTag());
-                            v.setBackgroundColor(getResources().getColor(R.color.colorAccent, getTheme()));
-                        } else {
-                            typeIds.remove(v.getTag());
-                            v.setBackgroundColor(getResources().getColor(R.color.colorGray, getTheme()));
-                        }
+                        Log.d("debug", typeMap.toString());
+                        typeToggle((TextView)v);
                     }
                 });
             } else {
                 mainViewHolder.secondType.setVisibility(View.INVISIBLE);
             }
             return convertView;
+        }
+
+        private void typeToggle(TextView v) {
+            if (!typeMap.containsKey(v.getTag())) {
+                typeMap.put((int)v.getTag(), v.getText().toString());
+                v.setBackgroundColor(getResources().getColor(R.color.colorAccent, getTheme()));
+            } else {
+                typeMap.remove(v.getTag());
+                v.setBackgroundColor(getResources().getColor(R.color.colorGray, getTheme()));
+            }
         }
 
         private class ViewHolder {
