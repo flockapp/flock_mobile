@@ -59,8 +59,8 @@ public class Event {
             for (Type type : types) {
                 typeIds.put(type.getId());
             }
+            dataObj.put("types", types);
         }
-        dataObj.put("types", types);
         dataObj.put("lng", lng);
         return client.makePostRequest("/v0/api/events", dataObj);
     }
