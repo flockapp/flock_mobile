@@ -54,9 +54,11 @@ public class Event {
         dataObj.put("cost", cost);
         dataObj.put("time", time);
         dataObj.put("lat", lat);
-        JSONArray typeIds = new JSONArray();
-        for (Type type: types) {
-            typeIds.put(type.getId());
+        if (types.size() > 0) {
+            JSONArray typeIds = new JSONArray();
+            for (Type type : types) {
+                typeIds.put(type.getId());
+            }
         }
         dataObj.put("types", types);
         dataObj.put("lng", lng);
