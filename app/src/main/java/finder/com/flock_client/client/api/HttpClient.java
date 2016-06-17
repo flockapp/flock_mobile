@@ -18,7 +18,7 @@ import okhttp3.Response;
  */
 public class HttpClient {
 //    public static final String baseHost = "172.19.197.164";
-    public static final String baseHost = "52.37.84.13";
+    public static final String baseHost = "192.168.0.104";
     public static final String baseUrl = "http://"+baseHost+":3000";
 
     private final OkHttpClient client = new OkHttpClient();
