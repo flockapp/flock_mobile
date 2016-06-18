@@ -23,9 +23,9 @@ public class Event {
     private String name;
     private int cost;
     private long time;
-    private ArrayList<Type> types;
+    private ArrayList<String> types;
 
-    public Event(String token, String name, long time, int cost, ArrayList<Type> types, double lat, double lng) {
+    public Event(String token, String name, long time, int cost, ArrayList<String> types, double lat, double lng) {
         this.client = new HttpClient(token);
         this.name = name;
         this.cost = cost;
@@ -55,9 +55,9 @@ public class Event {
         dataObj.put("time", time);
         dataObj.put("lat", lat);
         if (types.size() > 0) {
-            JSONArray typeIds = new JSONArray();
-            for (Type type : types) {
-                typeIds.put(type.getId());
+            JSONArray typeNames = new JSONArray();
+            for (String name: types) {
+                typeNames.put(name);
             }
             dataObj.put("types", types);
         }
@@ -110,7 +110,7 @@ public class Event {
                     JSONArray types = data.getJSONArray("types");
                     for (int i = 0; i < types.length(); i++) {
                         JSONObject item = types.getJSONObject(i);
-                        this.types.add(new Type(item.getInt("id"), item.getString("name")));
+                        this.types.add(item.getString("name"));
                     }
                 }
                 return true;

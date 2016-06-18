@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <fragment
-        android:id="@+id/map_event_scheduler"
-        android:layout_height="380dp"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:name="com.google.android.gms.maps.MapFragment"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
-    </fragment>
-
-    <ScrollView
-        android:id="@+id/timeline_event"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/appbar_padding_top"
+        android:background="@android:color/holo_green_light"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <TabWidget
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </android.support.design.widget.AppBarLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager_scheduler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true">
-
-    </ScrollView>
-
-</RelativeLayout>
+        android:layout_height="match_parent"/>
+</LinearLayout>

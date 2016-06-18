@@ -85,7 +85,14 @@ public class EventActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class ActivitiesFragment extends Fragment {
+    public static class ActivitiesFragment extends Fragment {
+
+        private int eventId;
+
+        public void setEventId(int eventId) {
+            this.eventId = eventId;
+        }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -94,7 +101,7 @@ public class EventActivity extends AppCompatActivity {
             addActivityButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(EventActivity.this, EventSchedulerActivity.class);
+                    Intent intent = new Intent(getContext(), EventSchedulerActivity.class);
                     intent.putExtra("eventId", eventId);
                     startActivity(intent);
                 }
@@ -103,7 +110,14 @@ public class EventActivity extends AppCompatActivity {
         }
     }
 
-    private class IdeasFragment extends Fragment {
+    public static class IdeasFragment extends Fragment {
+
+        private int eventId;
+
+        public void setEventId(int eventId) {
+            this.eventId = eventId;
+        }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -121,9 +135,14 @@ public class EventActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return new ActivitiesFragment();
+                    //Sends eventId into static fragment
+                    ActivitiesFragment activitiesFragment = new ActivitiesFragment();
+                    activitiesFragment.setEventId(eventId);
+                    return activitiesFragment;
                 case 1:
-                    return new IdeasFragment();
+                    IdeasFragment ideasFragment = new IdeasFragment();
+                    ideasFragment.setEventId(eventId);
+                    return ideasFragment;
             }
             Log.d("debug error", "getItem: position greater than 1");
             return null;

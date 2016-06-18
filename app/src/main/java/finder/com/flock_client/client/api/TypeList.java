@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class TypeList {
 
     private HttpClient client;
-    private ArrayList<Type> typeList = new ArrayList<>();
+    private ArrayList<String> typeList = new ArrayList<>();
 
     public TypeList(String token) {
         client = new HttpClient(token);
@@ -25,15 +25,12 @@ public class TypeList {
             JSONArray respData = resp.getJSONArray("data");
             for (int i = 0; i < respData.length(); i++) {
                 JSONObject item = respData.getJSONObject(i);
-                typeList.add(new Type(
-                        item.getInt("id"),
-                        item.getString("name")
-                ));
+                typeList.add(item.getString("name"));
             }
         }
     }
 
-    public ArrayList<Type> getTypeList() {
+    public ArrayList<String> getTypeList() {
         return typeList;
     }
 }

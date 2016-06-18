@@ -17,8 +17,8 @@ import okhttp3.Response;
  * Created by Daniel on 2/6/16.
  */
 public class HttpClient {
-//    public static final String baseHost = "172.19.197.164";
-    public static final String baseHost = "192.168.0.104";
+    public static final String baseHost = "52.37.84.13";
+//    public static final String baseHost = "192.168.0.108";
     public static final String baseUrl = "http://"+baseHost+":3000";
 
     private final OkHttpClient client = new OkHttpClient();
@@ -32,7 +32,7 @@ public class HttpClient {
         this.token = token;
     }
 
-    private JSONObject makeRequest(Request.Builder reqBuilder) throws Exception {
+    public JSONObject makeRequest(Request.Builder reqBuilder) throws Exception {
         Request request = reqBuilder.build();
         Response response = client.newCall(request).execute();
         JSONObject respObj = new JSONObject(response.body().string());

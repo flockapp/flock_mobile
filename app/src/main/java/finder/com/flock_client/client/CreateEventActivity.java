@@ -37,10 +37,7 @@ import org.json.JSONObject;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,7 +45,6 @@ import butterknife.OnClick;
 import finder.com.flock_client.FlockApplication;
 import finder.com.flock_client.R;
 import finder.com.flock_client.client.api.Event;
-import finder.com.flock_client.client.api.Type;
 import finder.com.flock_client.client.api.TypeList;
 
 /**
@@ -69,7 +65,7 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
 
     private LatLng eventLoc;
     private Calendar eventCalendar;
-    private HashMap<Integer, String> typeMap = new HashMap<>();
+    private ArrayList<String> typeList = new ArrayList<>();
 
     private int costVal = 2;
 
@@ -119,23 +115,12 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
 
     @OnClick(R.id.btn_create_event)
     public void onCreateEventButtonClicked() {
-        Log.d("debug", typeMap.toString());
-        ArrayList<Type> typeArrayList = new ArrayList<>();
-
-        //Iterates through typeMaps HashMap
-        Iterator typeIterator = typeMap.entrySet().iterator();
-        while (typeIterator.hasNext()) {
-            Map.Entry pair = (Map.Entry)typeIterator.next();
-            typeArrayList.add(new Type((int)pair.getKey(), (String) pair.getValue()));
-            typeIterator.remove(); // avoids a ConcurrentModificationException
-        }
-
         if (validateEventDetails()) {
             new CreateEventTask(((FlockApplication) getApplication()).getCurrToken(),
                     eventNameText.getText().toString(), //Name
                     eventCalendar.getTime().getTime(), //Time in unix time
                     costVal,
-                    typeArrayList,
+                    typeList,
                     eventLoc.latitude,
                     eventLoc.longitude
             ).execute();
@@ -211,10 +196,10 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
-    private class FetchTypesTask extends AsyncTask<Void, Void, ArrayList<Type>> {
+    private class FetchTypesTask extends AsyncTask<Void, Void, ArrayList<String>> {
 
         @Override
-        protected ArrayList<Type> doInBackground(Void... params) {
+        protected ArrayList<String> doInBackground(Void... params) {
 
             TypeList typeList = new TypeList(((FlockApplication) getApplication()).getCurrToken());
             try {
@@ -226,15 +211,15 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             }
         }
 
-        public void onPostExecute(ArrayList<Type> resp) {
+        public void onPostExecute(ArrayList<String> resp) {
             if (resp != null) {
-                ArrayList<Pair<Type, Type>> typeArray = new ArrayList<>();
+                ArrayList<Pair<String, String>> typeArray = new ArrayList<>();
                 try {
                     for (int i = 0; i < resp.size(); i += 2) {
                         if (i + 1 < resp.size()) {
                             typeArray.add(new Pair<>(resp.get(i), resp.get(i+1)));
                         } else {
-                            typeArray.add(new Pair<>(resp.get(i), new Type(-1, "")));
+                            typeArray.add(new Pair<>(resp.get(i), ""));
                         }
                     }
                     TypeListAdapter la = new TypeListAdapter(getBaseContext(), R.layout.item_event_type, typeArray);
@@ -267,11 +252,11 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         private String name;
         private long time;
         private int cost;
-        private ArrayList<Type> types;
+        private ArrayList<String> types;
         private double lat;
         private double lng;
 
-        public CreateEventTask(String token, String name, long time, int cost, ArrayList<Type> types, double lat, double lng) {
+        public CreateEventTask(String token, String name, long time, int cost, ArrayList<String> types, double lat, double lng) {
             this.token = token;
             this.name = name;
             this.time = time;
@@ -316,10 +301,10 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
-    private class TypeListAdapter extends ArrayAdapter<Pair<Type, Type>> {
+    private class TypeListAdapter extends ArrayAdapter<Pair<String, String>> {
         private int layout;
 
-        public TypeListAdapter(Context context, int resource, List<Pair<Type, Type>> objects) {
+        public TypeListAdapter(Context context, int resource, List<Pair<String, String>> objects) {
             super(context, resource, objects);
             layout = resource;
 
@@ -342,9 +327,8 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
             mainViewHolder.firstType.setVisibility(View.VISIBLE);
             mainViewHolder.secondType.setVisibility(View.VISIBLE);
 
-            Pair<Type, Type> row = getItem(position);
-            mainViewHolder.firstType.setText(row.first.getName());
-            mainViewHolder.firstType.setTag(row.first.getId());
+            Pair<String, String> row = getItem(position);
+            mainViewHolder.firstType.setText(row.first);
             //Type textview click listener
             mainViewHolder.firstType.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -352,13 +336,11 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
                     typeToggle((TextView)v);
                 }
             });
-            if (!(row.second.getId() == -1)) {
-                mainViewHolder.secondType.setText(row.second.getName());
-                mainViewHolder.secondType.setTag(row.second.getId());
+            if (!(row.second.equals(""))) {
+                mainViewHolder.secondType.setText(row.second);
                 mainViewHolder.secondType.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.d("debug", typeMap.toString());
                         typeToggle((TextView)v);
                     }
                 });
@@ -369,11 +351,12 @@ public class CreateEventActivity extends AppCompatActivity implements OnMapReady
         }
 
         private void typeToggle(TextView v) {
-            if (!typeMap.containsKey(v.getTag())) {
-                typeMap.put((int)v.getTag(), v.getText().toString());
+            String content = v.getText().toString();
+            if (!typeList.contains(content)) {
+                typeList.add(content);
                 v.setBackgroundColor(getResources().getColor(R.color.colorAccent, getTheme()));
             } else {
-                typeMap.remove(v.getTag());
+                typeList.remove(content);
                 v.setBackgroundColor(getResources().getColor(R.color.colorGray, getTheme()));
             }
         }

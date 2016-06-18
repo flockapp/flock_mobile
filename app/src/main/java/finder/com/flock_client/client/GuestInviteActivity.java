@@ -78,9 +78,10 @@ public class GuestInviteActivity extends AppCompatActivity implements GoogleApiC
     public void onInviteGuestButtonClicked() {
         //Firebase invitations
         Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invite_event_title))
-                .setEmailSubject(getString(R.string.invite_event_title))
-                .setEmailHtmlContent("<h3>Event Invitation</h3><p>You've been invited to a Flock event</p><br>%%APPINVITE_LINK_PLACEHOLDER%%")
-                .setDeepLink(Uri.parse(getString(R.string.invite_event_url)))
+                .setMessage("test message")
+//                .setEmailSubject(getString(R.string.invite_event_title))
+//                .setEmailHtmlContent("<h3>Event Invitation</h3><p>You've been invited to a Flock event</p><br>%%APPINVITE_LINK_PLACEHOLDER%%")
+//                .setDeepLink(Uri.parse(getString(R.string.invite_event_url)))
                 .build();
         Log.d("debug intent", intent.toString());
         intent.putExtra("eventId", eventId);
