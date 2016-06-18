@@ -18,7 +18,7 @@ import okhttp3.Request;
 
 public class FeatureList {
 
-    private static final int RADIUS = 1000; //1 km
+    private static final int RADIUS = 1500; //1.5 km
 
     private HttpClient client;
 
@@ -57,7 +57,7 @@ public class FeatureList {
                     ArrayList<String> types = new ArrayList<>();
                     JSONArray jsonTypes = item.getJSONArray("types");
                     for (int j = 0; j < jsonTypes.length(); j++) {
-                        types.add(jsonTypes.getString(i));
+                        types.add(jsonTypes.getString(j));
                     }
                     featureList.add(new Feature(
                         item.getString("place_id"),

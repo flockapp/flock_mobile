@@ -1,12 +1,14 @@
 package finder.com.flock_client.client;
 
 import android.Manifest;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.PagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,14 +19,22 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
 
 import finder.com.flock_client.FlockApplication;
 import finder.com.flock_client.R;
 import finder.com.flock_client.client.api.Event;
+import finder.com.flock_client.client.api.Feature;
+import finder.com.flock_client.client.api.FeatureList;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
@@ -34,9 +44,8 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class EventSchedulerActivity extends AppCompatActivity {
-    private GoogleMap googleMap;
 
-    private SchedulerMapFragment mainFragment;
+    private SchedulerMainFragment mainFragment;
     private SchedulerRecommendationsFragment recommendationsFragment;
     private int eventId;
 
@@ -49,8 +58,8 @@ public class EventSchedulerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scheduler_event);
 
         //Initializing fragments
-        mainFragment = new SchedulerMapFragment();
-        recommendationsFragment = new SchedulerRecommendationsFragment();
+        mainFragment = SchedulerMainFragment.newInstance();
+        recommendationsFragment = SchedulerRecommendationsFragment.newInstance();
 
         //Tabs setup
         ViewPager viewPager = (ViewPager) findViewById(R.id.pager_scheduler);
@@ -98,53 +107,138 @@ public class EventSchedulerActivity extends AppCompatActivity {
         }
     }
 
-    public static class SchedulerMapFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnCameraChangeListener {
+    public static class SchedulerMainFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnCameraChangeListener,
+        GoogleMap.OnMarkerClickListener, GoogleMap.InfoWindowAdapter {
 
         private Event event;
         private GoogleMap googleMap;
+        private SupportMapFragment mapFragment;
+        private boolean tapped = false;
+        private LatLng previousTarget = new LatLng(0, 0); //Default prev value
 
-        public static Fragment newInstance() {
-            return new SchedulerMapFragment();
+        public static SchedulerMainFragment newInstance() {
+            return new SchedulerMainFragment();
         }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View mainView = inflater.inflate(R.layout.fragment_scheduler_main, container, false);
-
-            SupportMapFragment mapFragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map_event_scheduler);
-            mapFragment.getMapAsync(this);
-
-            return mainView;
+            return inflater.inflate(R.layout.fragment_scheduler_main, container, false);
         }
 
         @Override
-        public void onMapReady(GoogleMap googleMap) {
-            this.googleMap = googleMap;
-            googleMap.setOnCameraChangeListener(this);
-        }
-
-        public void initMap() {
-
-        }
-
-        public void setEvent(Event event) {
-            this.event = event;
-            if (googleMap != null) {
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                        new LatLng(event.getLat(), event.getLng()), 12
-                ));
+        public void onActivityCreated(Bundle b) {
+            super.onActivityCreated(b);
+            FragmentManager fm = getChildFragmentManager();
+            mapFragment = (SupportMapFragment) fm.findFragmentById(R.id.map_event_scheduler);
+            if (mapFragment == null) {
+                mapFragment = SupportMapFragment.newInstance();
+                fm.beginTransaction().replace(R.id.map_event_scheduler, mapFragment).commit();
             }
-        }
-
-        //Retrieves features around camera radius using google places web services
-        public void getFeaturesAroundCamera(LatLng pos) {
-
         }
 
         @Override
         public void onCameraChange(CameraPosition cameraPosition) {
-            getFeaturesAroundCamera(cameraPosition.target);
+            Log.d("debug cameraZoom", cameraPosition.zoom+"");
+            LatLng currentTarget = cameraPosition.target;
+            //If marker was not tapped, zoom is beyond threshold and camera is moved (not zoomed)
+            if (!tapped && cameraPosition.zoom > 13 && !previousTarget.equals(currentTarget)) {
+                googleMap.clear(); //Removes all markers
+                previousTarget = currentTarget;
+                new FetchFeaturesTask(cameraPosition.target).execute();
+            }
+            tapped = false;
+        }
+
+        @Override
+        public void onMapReady(GoogleMap googleMap) {
+            Log.d("debug", "onMapReady: called");
+            this.googleMap = googleMap;
+            googleMap.setOnMarkerClickListener(this);
+            googleMap.setOnCameraChangeListener(this);
+            googleMap.setInfoWindowAdapter(this);
+            initMap();
+        }
+
+        public void setEvent(Event event) {
+            this.event = event;
+            Log.d("debug", "setEvent: called");
+            initMap();
+        }
+
+        private void initMap() {
+            if (googleMap == null) {
+                mapFragment.getMapAsync(this);
+            } else if (event != null) {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(event.getLat(), event.getLng()), 14
+                ));
+            }
+        }
+
+        @Override
+        public boolean onMarkerClick(Marker marker) {
+            tapped = true;
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                    marker.getPosition(), 15
+            ));
+            //SHOW INFO WINDOW
+            return true; //Disables default functionality
+        }
+
+        @Override
+        public View getInfoWindow(Marker marker) {
+            return null;
+        }
+
+        @Override
+        public View getInfoContents(Marker marker) {return null;}
+
+        private class FetchFeaturesTask extends AsyncTask<Void, Void, Boolean> {
+
+            private LatLng pos;
+
+            public FetchFeaturesTask(LatLng pos) {
+                this.pos = pos;
+            }
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                FeatureList featureList = new FeatureList();
+                ArrayList<Feature> features = featureList.getNearby(pos);
+                if (features != null ) {
+                    try {
+                        for (final Feature feature : features) {
+                            final Bitmap iconBmp = BitmapFactory.decodeStream(feature.getIconUrl().openConnection().getInputStream());
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    MarkerOptions markerOptions = new MarkerOptions()
+                                            .title(feature.getName())
+                                            .position(feature.getPos())
+                                            .icon(BitmapDescriptorFactory.fromBitmap(iconBmp));
+                                    googleMap.addMarker(markerOptions);
+                                }
+                            });
+                        }
+                        return true;
+                    } catch (Exception e) {
+                        Log.d("debug", "error", e);
+                    }
+                }
+                return false;
+            }
+
+            public void onPostExecute(Boolean success) {
+                if (!success) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getContext(), "Error occured", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
         }
     }
 
@@ -152,7 +246,7 @@ public class EventSchedulerActivity extends AppCompatActivity {
 
         private Event event;
 
-        public static Fragment newInstance() {
+        public static SchedulerRecommendationsFragment newInstance() {
             return new SchedulerRecommendationsFragment();
         }
 

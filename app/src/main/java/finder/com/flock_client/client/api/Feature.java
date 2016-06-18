@@ -1,5 +1,11 @@
 package finder.com.flock_client.client.api;
 
+import android.util.Log;
+
+import com.google.android.gms.maps.model.LatLng;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -8,20 +14,37 @@ import java.util.ArrayList;
 
 public class Feature {
 
-    private double lat, lng;
+    private LatLng pos;
     private String placeId;
     private ArrayList<String> types = new ArrayList<>();
     private String name;
-    private String iconUrl;
+    private URL iconUrl;
 
     public Feature(String placeId, String name, double lat, double lng, ArrayList<String> types, String iconUrl) {
         this.placeId = placeId;
         this.name = name;
         this.types = types;
-        this.iconUrl = iconUrl;
-        this.lat = lat;
-        this.lng = lng;
+        try {
+            this.iconUrl = new URL(iconUrl);
+        } catch (MalformedURLException e) {
+            Log.d("debug url", "error", e);
+        }
+        this.pos = new LatLng(lat, lng);
     }
 
+    public URL getIconUrl() {
+        return iconUrl;
+    }
 
+    public String getName() {
+        return name;
+    }
+
+    public ArrayList<String> getTypes() {
+        return types;
+    }
+
+    public LatLng getPos() {
+        return pos;
+    }
 }
