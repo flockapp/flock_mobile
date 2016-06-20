@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import finder.com.flock_client.AppConfig;
 import okhttp3.HttpUrl;
 import okhttp3.Request;
 
@@ -38,7 +39,7 @@ public class FeatureList {
                 .scheme("https")
                 .host("maps.googleapis.com")
                 .addPathSegments("/maps/api/place/nearbysearch/json")
-                .addQueryParameter("key", "AIzaSyBlsp-LTrajtKKDSLiCvo1doTlGFqxYRo8")
+                .addQueryParameter("key", AppConfig.GOOGLE_API_KEY)
                 .addQueryParameter("location", pos.latitude + "," + pos.longitude)
                 .addQueryParameter("radius", RADIUS + "")
                 .build();

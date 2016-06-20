@@ -10,4 +10,5 @@
     <dimen name="padding_horiz">24dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
     <dimen name="text_empty">18sp</dimen>
+    <dimen name="infowindow_width">140dp</dimen>
 </resources>
