@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="finder.com.flock_client.client.EventSchedulerActivity">
+    <item
+        android:title=""
+        android:id="@+id/item_scheduler_search"
+        app:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_menu_search" />
+</menu>

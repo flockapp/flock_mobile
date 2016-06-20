@@ -81,7 +81,7 @@ public class Feature {
     }
 
     public URL getWebsiteUrl() {
-        return websiteUrl
+        return websiteUrl;
     }
 
     public boolean populateDetails() {
